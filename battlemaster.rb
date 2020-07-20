@@ -26,6 +26,19 @@ def dec(state, key)
   state.merge(key => state[key] - 1)
 end
 
+def swap(arr, i1, i2)
+  arr.each_with_index.map do |item, i|
+    case i
+    when i1
+      arr[i2]
+    when i2
+      arr[i1]
+    else
+      item
+    end
+  end
+end
+
 def draw_sidebar(state)
   sidebar = Curses::Window.new(
     Curses.lines - BOTTOM_HEIGHT, SIDEBAR_WIDTH, 0, 0)
@@ -169,13 +182,11 @@ def handle_battle_input(input, state)
     state.merge("characters" => chars)
   when Curses::KEY_DOWN, "j"
     if state["selected_char"] && state["selected_char"] < state["characters"].length - 1
-      c = state["characters"]
       s = state["selected_char"]
-      c[s], c[s+1] = c[s+1], c[s]
 
       inc(
         inc(
-          state.merge("characters" => c),
+          state.merge("characters" => swap(state["characters"], s, s + 1)),
           "selected_char"
         ),
         "current_char"
@@ -185,13 +196,11 @@ def handle_battle_input(input, state)
     end
   when Curses::KEY_UP, "k"
     if state["selected_char"] && state["selected_char"] > 0
-      c = state["characters"]
       s = state["selected_char"]
-      c[s], c[s-1] = c[s-1], c[s]
 
       dec(
         dec(
-          state.merge("characters" => c),
+          state.merge("characters" => swap(state["characters"], s, s - 1)),
           "selected_char"
         ),
         "current_char"
