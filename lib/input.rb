@@ -106,6 +106,12 @@ module Input
                   "current_char" => nil,
                   "selected_char" => nil)
     when Curses::KEY_BACKSPACE
+      char_indexes = Util.non_null_indexes(state["battle"])
+
+      new_index =
+        char_indexes.filter { |i| i > state["current_char"] }.min ||
+        char_indexes.filter { |i| i < state["current_char"] }.max
+
       state.merge(
         "battle" => state["battle"].map.with_index do |item, i|
           if i == state["current_char"]
@@ -113,7 +119,8 @@ module Input
           else
             item
           end
-        end
+        end,
+        "current_char" => new_index
       )
     when "a"
       state.merge(

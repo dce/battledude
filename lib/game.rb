@@ -8,6 +8,6 @@ module Game
   end
 
   def Game.all_characters_list(state)
-    state["characters"]
+    state["players"] + state["npcs"]
   end
 end
