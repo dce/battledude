@@ -6,4 +6,8 @@ module Game
   def Game.save_state(state)
     File.write(".data/game.json", JSON.pretty_generate(state))
   end
+
+  def Game.all_characters_list(state)
+    state["characters"]
+  end
 end

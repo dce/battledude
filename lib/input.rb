@@ -105,13 +105,44 @@ module Input
       state.merge("mode" => "menu",
                   "current_char" => nil,
                   "selected_char" => nil)
+    when Curses::KEY_BACKSPACE
+      state.merge(
+        "battle" => state["battle"].map.with_index do |item, i|
+          if i == state["current_char"]
+            nil
+          else
+            item
+          end
+        end
+      )
     when "a"
-      state.merge("current_screen" => "add_participant")
+      state.merge(
+        "current_screen" => "add_participant",
+        "participant_list" => Game.all_characters_list(state),
+        "current_participant" => 0
+      )
     end
   end
 
   def Input.handle_add_participant_input(input, state)
     case input
+    when Curses::KEY_UP, "j"
+      if state["current_participant"] > 0
+        Util.dec(state, "current_participant")
+      end
+    when Curses::KEY_DOWN, "k"
+      if state["current_participant"] < state["participant_list"].length - 1
+        Util.inc(state, "current_participant")
+      end
+    when "\n"
+      state.merge(
+        "battle" => Util.insert_at_null_before(
+          state["battle"],
+          state["participant_list"][state["current_participant"]],
+          state["current_char"]
+        ),
+        "current_screen" => "battle"
+      )
     when "q"
       state.merge("current_screen" => "battle")
     end

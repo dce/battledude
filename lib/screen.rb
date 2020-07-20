@@ -101,6 +101,13 @@ module Screen
     win.setpos(1, 2)
     win.addstr("Add Participant")
     win.attroff(Curses::A_UNDERLINE)
+
+    state["participant_list"].each_with_index do |char, i|
+      win.attron(Curses::A_STANDOUT) if state["current_participant"] == i
+      win.setpos(i + 2, 2)
+      win.addstr(char["name"].to_s)
+      win.attroff(Curses::A_STANDOUT) if state["current_participant"] == i
+    end
   end
 
   def Screen.draw_main(state)

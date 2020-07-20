@@ -18,4 +18,17 @@ module Util
       arr[i]
     end
   end
+
+  def Util.insert_at_null_before(items, item, index)
+    slot = items
+      .length
+      .times
+      .reject { |i| items[i] }
+      .select { |i| i < index }
+      .max
+
+    items[slot] = item if slot
+
+    items
+  end
 end
