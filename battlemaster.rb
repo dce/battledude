@@ -27,16 +27,9 @@ def dec(state, key)
 end
 
 def swap(arr, i1, i2)
-  arr.each_with_index.map do |item, i|
-    case i
-    when i1
-      arr[i2]
-    when i2
-      arr[i1]
-    else
-      item
-    end
-  end
+  n = arr.dup
+  n[i1], n[i2] = n[i2], n[i1]
+  n
 end
 
 def draw_sidebar(state)
@@ -75,38 +68,56 @@ def draw_bottom(state)
 end
 
 def draw_battle(win, state)
+  cols = {
+    name: 5,
+    chp: 20,
+    mhp: 30,
+    ac: 40
+  }
+
   win.attron(Curses::A_UNDERLINE)
-  win.setpos(1, 2)
+  win.setpos(1, cols[:name])
   win.addstr("Name")
 
-  win.setpos(1, 15)
+  win.setpos(1, cols[:chp])
   win.addstr("Cur HP")
 
-  win.setpos(1, 25)
+  win.setpos(1, cols[:mhp])
   win.addstr("Max HP")
 
-  win.setpos(1, 35)
+  win.setpos(1, cols[:ac])
   win.addstr("AC")
   win.attroff(Curses::A_UNDERLINE)
 
-  state["characters"].each_with_index do |char, i|
-    win.attron(Curses::A_STANDOUT) if state["current_char"] == i
-    win.attron(Curses::A_UNDERLINE) if state["selected_char"] == i
+  state["battle"].each_with_index do |item, i|
+    line = state["battle"].length - i + 2
 
-    win.setpos(i + 2, 2)
-    win.addstr(char["name"])
+    win.attron(Curses::A_DIM)
+    win.setpos(line, 2)
+    win.addstr((i + 1).to_s)
+    win.attroff(Curses::A_DIM)
 
-    win.attroff(Curses::A_STANDOUT) if state["current_char"] == i
-    win.attroff(Curses::A_UNDERLINE) if state["selected_char"] == i
+    char = state["battle"][i]
 
-    win.setpos(i + 2, 15)
-    win.addstr(char["chp"].to_s)
+    if char
+      win.attron(Curses::A_STANDOUT) if state["current_char"] == i
+      win.attron(Curses::A_UNDERLINE) if state["selected_char"] == i
 
-    win.setpos(i + 2, 25)
-    win.addstr(char["mhp"].to_s)
+      win.setpos(line, cols[:name])
+      win.addstr(char["name"])
 
-    win.setpos(i + 2, 35)
-    win.addstr(char["ac"].to_s)
+      win.attroff(Curses::A_STANDOUT) if state["current_char"] == i
+      win.attroff(Curses::A_UNDERLINE) if state["selected_char"] == i
+
+      win.setpos(line, cols[:chp])
+      win.addstr(char["chp"].to_s)
+
+      win.setpos(line, cols[:mhp])
+      win.addstr(char["mhp"].to_s)
+
+      win.setpos(line, cols[:ac])
+      win.addstr(char["ac"].to_s)
+    end
   end
 end
 
@@ -161,7 +172,7 @@ def handle_battle_input(input, state)
       state.merge("selected_char" => state["current_char"])
     end
   when "-"
-    chars = state["characters"].each_with_index.map do |c, i|
+    chars = state["battle"].each_with_index.map do |c, i|
       if i == state["current_char"]
         dec(c, "chp")
       else
@@ -169,9 +180,9 @@ def handle_battle_input(input, state)
       end
     end
 
-    state.merge("characters" => chars)
+    state.merge("battle" => chars)
   when "+", "="
-    chars = state["characters"].each_with_index.map do |c, i|
+    chars = state["battle"].each_with_index.map do |c, i|
       if i == state["current_char"]
         inc(c, "chp")
       else
@@ -179,34 +190,62 @@ def handle_battle_input(input, state)
       end
     end
 
-    state.merge("characters" => chars)
-  when Curses::KEY_DOWN, "j"
-    if state["selected_char"] && state["selected_char"] < state["characters"].length - 1
+    state.merge("battle" => chars)
+  when Curses::KEY_DOWN, "j" # these move backward
+    if state["selected_char"] && state["selected_char"] > 0
+      s = state["selected_char"]
+
+      battle = swap(state["battle"], s, s - 1)
+
+      if battle.length > 20
+        while battle.last.nil?
+          battle.pop
+        end
+      end
+
+      dec(
+        dec(
+          state.merge("battle" => battle),
+          "selected_char"
+        ),
+        "current_char"
+      )
+    else
+      char_indexes = 0.upto(state["battle"].length).select do |i|
+        state["battle"][i]
+      end
+
+      c = char_indexes.filter { |i| i < state["current_char"] }.max
+
+      if c && c != state["current_char"]
+        state.merge("current_char" => c)
+      else
+        state
+      end
+    end
+  when Curses::KEY_UP, "k" # these move backward
+    if state["selected_char"]
       s = state["selected_char"]
 
       inc(
         inc(
-          state.merge("characters" => swap(state["characters"], s, s + 1)),
+          state.merge("battle" => swap(state["battle"], s, s + 1)),
           "selected_char"
         ),
         "current_char"
       )
-    elsif state["current_char"] < state["characters"].length - 1
-      inc(state, "current_char")
-    end
-  when Curses::KEY_UP, "k"
-    if state["selected_char"] && state["selected_char"] > 0
-      s = state["selected_char"]
+    else
+      char_indexes = 0.upto(state["battle"].length).select do |i|
+        state["battle"][i]
+      end
 
-      dec(
-        dec(
-          state.merge("characters" => swap(state["characters"], s, s - 1)),
-          "selected_char"
-        ),
-        "current_char"
-      )
-    elsif state["current_char"] > 0
-      dec(state, "current_char")
+      c = char_indexes.filter { |i| i > state["current_char"] }.min
+
+      if c && c != state["current_char"]
+        state.merge("current_char" => c)
+      else
+        state
+      end
     end
   when Curses::KEY_LEFT, "h"
     state.merge("mode" => "menu",
