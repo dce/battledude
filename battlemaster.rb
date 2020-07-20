@@ -234,4 +234,4 @@ begin
   state = handle_input(input, state)
 end while input != 'q'
 
-main.close
+window.close
