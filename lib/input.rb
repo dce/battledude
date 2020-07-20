@@ -112,7 +112,7 @@ module Input
 
   def Input.handle_add_participant_input(input, state)
     case input
-    when "c"
+    when "q"
       state.merge("current_screen" => "battle")
     end
   end
@@ -135,6 +135,8 @@ module Input
       Game.save_state(state)
 
       state.merge("message" => "State saved (#{Time.now})")
+    when 'q'
+      state.merge("exit" => true)
     else
       state.merge("message" => "Unrecognized key: '#{input}'")
     end

@@ -16,6 +16,6 @@ begin
   window = Screen.draw_ui(state)
   ch = window.get_char
   state = Input.handle_input(ch, state)
-end while ch != 'q'
+end while state["exit"] != true
 
 window.close
