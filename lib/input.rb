@@ -1,20 +1,22 @@
 module Input
   def Input.handle_menu_input(input, state)
-    screen = state["current_screen"]
+    current = state["current_menu_item"]
+    entry = Screen.menu_items[current]
 
     case input
     when Curses::KEY_DOWN, "j"
-      if screen < Screen.screens.keys.max
-        Util.inc(state, "current_screen")
+      if current < Screen.menu_items.count - 1
+        Util.inc(state, "current_menu_item")
       end
     when Curses::KEY_UP, "k"
-      if screen > 1
-        Util.dec(state, "current_screen")
+      if current > 0
+        Util.dec(state, "current_menu_item")
       end
     when Curses::KEY_RIGHT, "l"
-      if screen == Screen::BATTLE_SCREEN
+      if entry.last == "battle"
         state.merge(
           "mode" => "main",
+          "current_screen" => entry.last,
           "current_char" => Util.non_null_indexes(state["battle"]).max
         )
       end
@@ -101,6 +103,15 @@ module Input
       state.merge("mode" => "menu",
                   "current_char" => nil,
                   "selected_char" => nil)
+    when "a"
+      state.merge("current_screen" => "add_participant")
+    end
+  end
+
+  def Input.handle_add_participant_input(input, state)
+    case input
+    when "c"
+      state.merge("current_screen" => "battle")
     end
   end
 
@@ -112,8 +123,10 @@ module Input
       handle_menu_input(input, state)
     when "main"
       case state["current_screen"]
-      when 1
+      when "battle"
         handle_battle_input(input, state)
+      when "add_participant"
+        handle_add_participant_input(input, state)
       end
     end || case input
     when 's'

@@ -2,14 +2,11 @@ module Screen
   SIDEBAR_WIDTH = 20
   BOTTOM_HEIGHT = 10
 
-  BATTLE_SCREEN = 1
-  CHARACTER_SCREEN = 2
-
-  def Screen.screens
-    {
-      BATTLE_SCREEN => "Battle",
-      CHARACTER_SCREEN => "Characters"
-    }
+  def Screen.menu_items
+    [
+      ["Battle", "battle"],
+      ["Character", "character"]
+    ]
   end
 
   def Screen.draw_sidebar(state)
@@ -17,20 +14,20 @@ module Screen
       Curses.lines - BOTTOM_HEIGHT, SIDEBAR_WIDTH, 0, 0)
     sidebar.box("*", "*", "*")
 
-    screens.each do |index, item|
-      sidebar.setpos(index, 2)
+    menu_items.each_with_index do |(name, _), index|
+      sidebar.setpos(index + 1, 2)
 
-      if state["current_screen"] == index
+      if state["current_menu_item"] == index
         if state["mode"] == "menu"
           sidebar.attron(Curses::A_STANDOUT)
-          sidebar.addstr(item)
+          sidebar.addstr(name)
           sidebar.attroff(Curses::A_STANDOUT)
         else
-          sidebar.addstr(item)
+          sidebar.addstr(name)
         end
       else
         sidebar.attron(Curses::A_DIM)
-        sidebar.addstr(item)
+        sidebar.addstr(name)
         sidebar.attroff(Curses::A_DIM)
       end
     end
@@ -99,14 +96,24 @@ module Screen
     end
   end
 
+  def Screen.draw_add_participant(win, state)
+    win.attron(Curses::A_UNDERLINE)
+    win.setpos(1, 2)
+    win.addstr("Add Participant")
+    win.attroff(Curses::A_UNDERLINE)
+  end
+
   def Screen.draw_main(state)
     main = Curses::Window.new(
       Curses.lines - BOTTOM_HEIGHT, Curses.cols - SIDEBAR_WIDTH, 0, SIDEBAR_WIDTH)
     main.box("*", "*", "*")
     main.keypad(true)
 
-    if state["current_screen"] == 1
+    case state["current_screen"]
+    when "battle"
       draw_battle(main, state)
+    when "add_participant"
+      draw_add_participant(main, state)
     end
 
     main
