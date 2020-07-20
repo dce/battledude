@@ -32,6 +32,12 @@ def swap(arr, i1, i2)
   n
 end
 
+def non_null_indexes(arr)
+  0.upto(arr.length).select do |i|
+    arr[i]
+  end
+end
+
 def draw_sidebar(state)
   sidebar = Curses::Window.new(
     Curses.lines - BOTTOM_HEIGHT, SIDEBAR_WIDTH, 0, 0)
@@ -94,7 +100,7 @@ def draw_battle(win, state)
 
     win.attron(Curses::A_DIM)
     win.setpos(line, 2)
-    win.addstr((i + 1).to_s)
+    win.addstr((i + 1).to_s.rjust(2))
     win.attroff(Curses::A_DIM)
 
     char = state["battle"][i]
@@ -158,7 +164,10 @@ def handle_menu_input(input, state)
     end
   when Curses::KEY_RIGHT, "l"
     if screen == BATTLE_SCREEN
-      state.merge("mode" => "main", "current_char" => 0)
+      state.merge(
+        "mode" => "main",
+        "current_char" => non_null_indexes(state["battle"]).max
+      )
     end
   end
 end
@@ -211,13 +220,11 @@ def handle_battle_input(input, state)
         "current_char"
       )
     else
-      char_indexes = 0.upto(state["battle"].length).select do |i|
-        state["battle"][i]
-      end
+      c = non_null_indexes(state["battle"])
+            .filter { |i| i < state["current_char"] }
+            .max
 
-      c = char_indexes.filter { |i| i < state["current_char"] }.max
-
-      if c && c != state["current_char"]
+      if c
         state.merge("current_char" => c)
       else
         state
@@ -235,13 +242,11 @@ def handle_battle_input(input, state)
         "current_char"
       )
     else
-      char_indexes = 0.upto(state["battle"].length).select do |i|
-        state["battle"][i]
-      end
+      c = non_null_indexes(state["battle"])
+            .filter { |i| i > state["current_char"] }
+            .min
 
-      c = char_indexes.filter { |i| i > state["current_char"] }.min
-
-      if c && c != state["current_char"]
+      if c
         state.merge("current_char" => c)
       else
         state
