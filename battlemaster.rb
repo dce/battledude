@@ -124,15 +124,15 @@ def handle_menu_input(input, state)
   screen = state["current_screen"]
 
   case input
-  when Curses::KEY_DOWN
+  when Curses::KEY_DOWN, "j"
     if screen < screens.keys.max
       inc(state, "current_screen")
     end
-  when Curses::KEY_UP
+  when Curses::KEY_UP, "k"
     if screen > 1
       dec(state, "current_screen")
     end
-  when Curses::KEY_RIGHT
+  when Curses::KEY_RIGHT, "l"
     if screen == BATTLE_SCREEN
       state.merge("mode" => "main", "current_char" => 0)
     else
@@ -169,7 +169,7 @@ def handle_battle_input(input, state)
     end
 
     state.merge("characters" => chars)
-  when Curses::KEY_DOWN
+  when Curses::KEY_DOWN, "j"
     if state["selected_char"] && state["selected_char"] < state["characters"].length - 1
       c = state["characters"]
       s = state["selected_char"]
@@ -185,7 +185,7 @@ def handle_battle_input(input, state)
     elsif state["current_char"] < state["characters"].length - 1
       inc(state, "current_char")
     end
-  when Curses::KEY_UP
+  when Curses::KEY_UP, "k"
     if state["selected_char"] && state["selected_char"] > 0
       c = state["characters"]
       s = state["selected_char"]
@@ -201,7 +201,7 @@ def handle_battle_input(input, state)
     elsif state["current_char"] > 0
       dec(state, "current_char")
     end
-  when Curses::KEY_LEFT
+  when Curses::KEY_LEFT, "h"
     state.merge("mode" => "menu",
                 "current_char" => nil,
                 "selected_char" => nil)
