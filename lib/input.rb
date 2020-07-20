@@ -105,6 +105,14 @@ module Input
       state.merge("mode" => "menu",
                   "current_char" => nil,
                   "selected_char" => nil)
+    when "c"
+      state.merge(
+        "battle" => Util.insert_at_null_before(
+          state["battle"],
+          state["battle"][state["current_char"]],
+          state["current_char"]
+        )
+      )
     when Curses::KEY_BACKSPACE
       char_indexes = Util.non_null_indexes(state["battle"])
 
