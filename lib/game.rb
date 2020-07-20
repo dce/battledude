@@ -8,6 +8,6 @@ module Game
   end
 
   def Game.all_characters_list(state)
-    state["players"] + state["npcs"]
+    (state["players"] + state["npcs"]).sort_by { |c| c["name"] }
   end
 end
