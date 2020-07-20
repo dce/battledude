@@ -4,7 +4,7 @@ require "json"
 require "curses"
 
 SIDEBAR_WIDTH = 20
-BOTTOM_HEIGHT = 5
+BOTTOM_HEIGHT = 10
 
 BATTLE_SCREEN = 1
 CHARACTER_SCREEN = 2
