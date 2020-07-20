@@ -141,11 +141,11 @@ module Input
 
   def Input.handle_add_participant_input(input, state)
     case input
-    when Curses::KEY_UP, "j"
+    when Curses::KEY_UP, "k"
       if state["current_participant"] > 0
         Util.dec(state, "current_participant")
       end
-    when Curses::KEY_DOWN, "k"
+    when Curses::KEY_DOWN, "j"
       if state["current_participant"] < state["participant_list"].length - 1
         Util.inc(state, "current_participant")
       end
