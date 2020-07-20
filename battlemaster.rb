@@ -67,10 +67,10 @@ def draw_battle(win, state)
   win.addstr("Name")
 
   win.setpos(1, 15)
-  win.addstr("Max HP")
+  win.addstr("Cur HP")
 
   win.setpos(1, 25)
-  win.addstr("Cur HP")
+  win.addstr("Max HP")
 
   win.setpos(1, 35)
   win.addstr("AC")
@@ -87,10 +87,10 @@ def draw_battle(win, state)
     win.attroff(Curses::A_UNDERLINE) if state["selected_char"] == i
 
     win.setpos(i + 2, 15)
-    win.addstr(char["mhp"].to_s)
+    win.addstr(char["chp"].to_s)
 
     win.setpos(i + 2, 25)
-    win.addstr(char["chp"].to_s)
+    win.addstr(char["mhp"].to_s)
 
     win.setpos(i + 2, 35)
     win.addstr(char["ac"].to_s)
@@ -135,8 +135,6 @@ def handle_menu_input(input, state)
   when Curses::KEY_RIGHT, "l"
     if screen == BATTLE_SCREEN
       state.merge("mode" => "main", "current_char" => 0)
-    else
-      state.merge("mode" => "main")
     end
   end
 end
