@@ -83,6 +83,9 @@ def draw_battle(win, state)
     win.setpos(i + 2, 2)
     win.addstr(char["name"])
 
+    win.attroff(Curses::A_STANDOUT) if state["current_char"] == i
+    win.attroff(Curses::A_UNDERLINE) if state["selected_char"] == i
+
     win.setpos(i + 2, 15)
     win.addstr(char["mhp"].to_s)
 
@@ -91,9 +94,6 @@ def draw_battle(win, state)
 
     win.setpos(i + 2, 35)
     win.addstr(char["ac"].to_s)
-
-    win.attroff(Curses::A_STANDOUT) if state["current_char"] == i
-    win.attroff(Curses::A_UNDERLINE) if state["selected_char"] == i
   end
 end
 
