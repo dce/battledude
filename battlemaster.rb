@@ -95,15 +95,13 @@ def draw_battle(win, state)
   win.addstr("AC")
   win.attroff(Curses::A_UNDERLINE)
 
-  state["battle"].each_with_index do |item, i|
-    line = state["battle"].length - i + 2
+  state["battle"].each_with_index do |char, i|
+    line = state["battle"].length - i + 1
 
     win.attron(Curses::A_DIM)
     win.setpos(line, 2)
     win.addstr((i + 1).to_s.rjust(2))
     win.attroff(Curses::A_DIM)
-
-    char = state["battle"][i]
 
     if char
       win.attron(Curses::A_STANDOUT) if state["current_char"] == i
@@ -206,11 +204,7 @@ def handle_battle_input(input, state)
 
       battle = swap(state["battle"], s, s - 1)
 
-      if battle.length > 20
-        while battle.last.nil?
-          battle.pop
-        end
-      end
+      battle.pop while battle.length > 20 && battle.last.nil?
 
       dec(
         dec(
