@@ -7,10 +7,12 @@ module Input
     when Curses::KEY_DOWN, "j"
       if current < Screen.menu_items.count - 1
         Util.inc(state, "current_menu_item")
+          .merge("current_screen" => Screen.menu_items[current + 1].last)
       end
     when Curses::KEY_UP, "k"
       if current > 0
         Util.dec(state, "current_menu_item")
+          .merge("current_screen" => Screen.menu_items[current - 1].last)
       end
     when Curses::KEY_RIGHT, "l"
       if entry.last == "battle"
