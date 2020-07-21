@@ -113,7 +113,7 @@ module Input
           state["current_char"]
         )
       )
-    when Curses::KEY_BACKSPACE
+    when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
       char_indexes = Util.non_null_indexes(state["battle"])
 
       new_index =

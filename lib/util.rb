@@ -31,4 +31,8 @@ module Util
 
     items
   end
+
+  def Util.ord_eq?(val)
+    -> (str) { str.ord == val }
+  end
 end
