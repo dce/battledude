@@ -19,17 +19,23 @@ module Util
     end
   end
 
-  def Util.insert_at_null_before(items, item, index)
-    slot = items
+  def Util.null_before(items, index)
+    items
       .length
       .times
       .reject { |i| items[i] }
-      .select { |i| i < index }
+      .select { |i| index.nil? || i < index }
       .max
+  end
 
-    items[slot] = item if slot
-
-    items
+  def Util.set_at(items, item, index)
+    items.length.times.map do |i|
+      if i == index
+        item
+      else
+        items[i]
+      end
+    end
   end
 
   def Util.ord_eq?(val)

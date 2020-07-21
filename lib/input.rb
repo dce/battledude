@@ -106,13 +106,20 @@ module Input
                   "current_char" => nil,
                   "selected_char" => nil)
     when "c"
-      state.merge(
-        "battle" => Util.insert_at_null_before(
-          state["battle"],
-          state["battle"][state["current_char"]],
-          state["current_char"]
+      slot = Util.null_before(state["battle"], state["current_char"])
+
+      if slot
+        state.merge(
+          "battle" => Util.set_at(
+            state["battle"],
+            state["battle"][state["current_char"]],
+            slot
+          ),
+          "current_char" => slot
         )
-      )
+      else
+        state.merge("message" => "Couldn't add char")
+      end
     when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
       char_indexes = Util.non_null_indexes(state["battle"])
 
@@ -150,14 +157,24 @@ module Input
         Util.inc(state, "current_participant")
       end
     when "\n"
-      state.merge(
-        "battle" => Util.insert_at_null_before(
-          state["battle"],
-          state["participant_list"][state["current_participant"]],
-          state["current_char"]
-        ),
-        "current_screen" => "battle"
-      )
+      slot = Util.null_before(state["battle"], state["current_char"])
+
+      if slot
+        state.merge(
+          "battle" => Util.set_at(
+            state["battle"],
+            state["participant_list"][state["current_participant"]],
+            slot
+          ),
+          "current_screen" => "battle",
+          "current_char" => slot
+        )
+      else
+        state.merge(
+          "currrent_screen" => "battle",
+          "message" => "Couldn't add char"
+        )
+      end
     when "q"
       state.merge("current_screen" => "battle")
     end
