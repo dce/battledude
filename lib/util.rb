@@ -39,6 +39,6 @@ module Util
   end
 
   def Util.ord_eq?(val)
-    -> (str) { str.ord == val }
+    -> (str) { str && str.ord == val }
   end
 end
