@@ -1,0 +1,97 @@
+{
+  "mode": "menu",
+  "current_menu_item": 0,
+  "current_screen": "battle",
+  "battle": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    {
+      "name": "Johan",
+      "mhp": 33,
+      "chp": 33,
+      "ac": 14
+    },
+    {
+      "name": "Graksis",
+      "mhp": 33,
+      "chp": 33,
+      "ac": 17
+    },
+    {
+      "name": "Brexalee",
+      "mhp": 44,
+      "chp": 34,
+      "ac": 17
+    }
+  ],
+  "players": [
+    {
+      "name": "Violet",
+      "mhp": 32,
+      "chp": 32,
+      "ac": 13
+    },
+    {
+      "name": "Graksis",
+      "mhp": 33,
+      "chp": 33,
+      "ac": 17
+    },
+    {
+      "name": "Brexalee",
+      "mhp": 44,
+      "chp": 44,
+      "ac": 17
+    },
+    {
+      "name": "Harmon",
+      "mhp": 28,
+      "chp": 28,
+      "ac": 12
+    },
+    {
+      "name": "Johan",
+      "mhp": 33,
+      "chp": 33,
+      "ac": 14
+    }
+  ],
+  "npcs": [
+    {
+      "name": "Kobold",
+      "mhp": 5,
+      "chp": 5,
+      "ac": 12
+    },
+    {
+      "name": "Acolyte",
+      "mhp": 9,
+      "chp": 9,
+      "ac": 10
+    },
+    {
+      "name": "Cultist",
+      "mhp": 9,
+      "chp": 9,
+      "ac": 12
+    }
+  ],
+  "message": "",
+  "participant_list": [
+  ]
+}
