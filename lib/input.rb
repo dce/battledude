@@ -177,6 +177,13 @@ module Input
       end
     when "q"
       state.merge("current_screen" => "battle")
+    when 'a'..'z'
+      pl = state["participant_list"]
+      char = pl.length.times.detect { |i| pl[i]["name"].downcase.start_with?(input) }
+
+      if char
+        state.merge("current_participant" => char)
+      end
     end
   end
 
