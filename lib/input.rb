@@ -74,7 +74,7 @@ module Input
               .max
 
         if c
-          state.merge("current_char" => c)
+          state.merge("current_char" => c, "message" => state["battle"][c]["note"])
         else
           state
         end
@@ -96,7 +96,7 @@ module Input
               .min
 
         if c
-          state.merge("current_char" => c)
+          state.merge("current_char" => c, "message" => state["battle"][c]["note"])
         else
           state
         end
