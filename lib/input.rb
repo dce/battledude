@@ -187,6 +187,24 @@ module Input
     end
   end
 
+  def Input.handle_roll_input(input, state)
+    case input
+    when "d", "+", "0".."9"
+      state.merge("roll_dice" => state["roll_dice"] + input)
+    when "\n"
+      result = Util.eval_dice_string(state["roll_dice"])
+
+      state.merge(
+        "mode" => "main",
+        "message" => "Rolling #{ state["roll_dice"] }: #{result}"
+      )
+    when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
+      state.merge("roll_dice" => state["roll_dice"][0..-2])
+    else
+      state
+    end
+  end
+
   def Input.handle_input(input, state)
     mode = state["mode"]
 
@@ -200,7 +218,11 @@ module Input
       when "add_participant"
         handle_add_participant_input(input, state)
       end
+    when "roll"
+      handle_roll_input(input, state)
     end || case input
+    when 'r'
+      state.merge("mode" => "roll", "roll_dice" => "")
     when 's'
       Game.save_state(state)
 

@@ -41,4 +41,35 @@ module Util
   def Util.ord_eq?(val)
     -> (str) { str && str.ord == val }
   end
+
+  def Util.parse_dice_string(str)
+    str.scan(/(\d*)(d?\d+)/).flat_map do |count, die|
+      if count == ""
+        [die]
+      else
+        [die] * count.to_i
+      end
+    end
+  end
+
+  def Util.eval_die(die)
+    if die =~ /d(\d+)/
+      rand($1.to_i) + 1
+    else
+      die.to_i
+    end
+  end
+
+  def Util.eval_dice(dice)
+    results = dice.map { |die| [die, eval_die(die)] }
+
+    results
+      .map { |die, result| "(#{die} = #{result})" }
+      .join(" + ")
+      .concat(" = #{ results.sum { |_, r| r } }")
+  end
+
+  def Util.eval_dice_string(str)
+    eval_dice(parse_dice_string(str))
+  end
 end

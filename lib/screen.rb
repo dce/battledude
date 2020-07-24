@@ -40,7 +40,13 @@ module Screen
       BOTTOM_HEIGHT, Curses.cols, Curses.lines - BOTTOM_HEIGHT, 0)
     bottom.box("|", "-", "+")
     bottom.setpos(1, 2)
-    bottom.addstr(state["message"].to_s)
+
+    if state["mode"] == "roll"
+      bottom.addstr("> " + state["roll_dice"].to_s)
+    else
+      bottom.addstr(state["message"].to_s)
+    end
+
     bottom.refresh
   end
 
