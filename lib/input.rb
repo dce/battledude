@@ -232,6 +232,15 @@ module Input
         "participant_filter" => filter,
         "current_participant" => 0
       )
+    when " "
+      page_size = Curses.lines - Screen::BOTTOM_HEIGHT - 4
+
+      char = [
+        state["current_participant"] + page_size,
+        state["participant_list"].length - 1
+      ].min
+
+      state.merge("current_participant" => char)
     end
   end
 
