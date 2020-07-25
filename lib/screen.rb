@@ -122,16 +122,26 @@ module Screen
   end
 
   def Screen.draw_add_participant(win, state)
+    height = Curses.lines - BOTTOM_HEIGHT - 3
+
+    if state["current_participant"] >= height
+      offset = state["current_participant"] - height + 1
+    else
+      offset = 0
+    end
+
     win.attron(Curses::A_UNDERLINE)
     win.setpos(1, 2)
     win.addstr("Add Participant")
     win.attroff(Curses::A_UNDERLINE)
 
-    state["participant_list"].each_with_index do |char, i|
-      win.attron(Curses::A_STANDOUT) if state["current_participant"] == i
+    state["participant_list"][offset, height].each_with_index do |char, i|
+      current = state["current_participant"] - offset == i
+
+      win.attron(Curses::A_STANDOUT) if current
       win.setpos(i + 2, 2)
       win.addstr(char["name"].to_s)
-      win.attroff(Curses::A_STANDOUT) if state["current_participant"] == i
+      win.attroff(Curses::A_STANDOUT) if current
     end
   end
 
