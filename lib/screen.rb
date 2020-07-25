@@ -50,12 +50,20 @@ module Screen
       bottom.box("|", "-", "+")
     end
 
-    bottom.setpos(1, 2)
-
     if state["mode"] == "roll"
+      bottom.setpos(1, 2)
       bottom.addstr("> " + state["roll_dice"].to_s)
     else
-      bottom.addstr(state["message"].to_s)
+      msgs = if state["message"].is_a?(Array)
+               state["message"]
+             else
+               [state["message"]]
+             end
+
+      msgs.each_with_index do |msg, i|
+        bottom.setpos(i + 1, 2)
+        bottom.addstr(msg)
+      end
     end
 
     bottom.refresh

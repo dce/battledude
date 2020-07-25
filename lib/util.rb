@@ -69,4 +69,12 @@ module Util
   def Util.eval_dice_string(str)
     eval_dice(parse_dice_string(str))
   end
+
+  def Util.split_footer_string(str)
+    line_length = Curses.cols - 4
+
+    (0..(str.length)).step(line_length).map do |i|
+      str[i...(i + line_length)].strip
+    end
+  end
 end

@@ -196,7 +196,9 @@ module Input
 
       state.merge(
         "mode" => "main",
-        "message" => "Rolling #{ state["roll_dice"] }: #{result}"
+        "message" => Util.split_footer_string(
+          "Rolling #{ state["roll_dice"] }: #{result}"
+        )
       )
     when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
       state.merge("roll_dice" => state["roll_dice"][0..-2])
