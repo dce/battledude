@@ -143,6 +143,16 @@ module Input
         "participant_list" => Game.all_characters_list(state),
         "current_participant" => 0
       )
+    when "i"
+      char = state["current_char"] &&
+        state["battle"][state["current_char"]]
+
+      if char && char["api"]
+        state.merge(
+          "current_screen" => "info",
+          "info" => Api.fetch(char["api"])
+        )
+      end
     end
   end
 

@@ -135,6 +135,15 @@ module Screen
     end
   end
 
+  def Screen.draw_info(win, state)
+    strs = state["info"].to_s.split("\n")
+
+    strs.each_with_index do |str, i|
+      win.setpos(i + 1, 2)
+      win.addstr(str)
+    end
+  end
+
   def Screen.draw_main(state)
     main = Curses::Window.new(
       Curses.lines - BOTTOM_HEIGHT, Curses.cols - SIDEBAR_WIDTH, 0, SIDEBAR_WIDTH)
@@ -152,6 +161,8 @@ module Screen
       draw_battle(main, state)
     when "add_participant"
       draw_add_participant(main, state)
+    when "info"
+      draw_info(main, state)
     end
 
     main

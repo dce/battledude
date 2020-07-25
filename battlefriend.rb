@@ -7,6 +7,7 @@ require "./lib/game"
 require "./lib/screen"
 require "./lib/input"
 require "./lib/util"
+require "./lib/api"
 
 Curses.init_screen
 
