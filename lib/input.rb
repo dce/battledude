@@ -219,6 +219,25 @@ module Input
     end
   end
 
+  def Input.handle_info_input(input, state)
+    case input
+    when "j" # scroll down
+      if state["info_offset"]
+        Util.inc(state, "info_offset")
+      else
+        state.merge("info_offset" => 1)
+      end
+    when "k" # scroll up
+      if state["info_offset"]
+        Util.dec(state, "info_offset")
+      else
+        state.merge("info_offset" => 0)
+      end
+    when "q"
+      state.merge("current_screen" => "battle")
+    end
+  end
+
   def Input.handle_input(input, state)
     mode = state["mode"]
 
@@ -231,6 +250,8 @@ module Input
         handle_battle_input(input, state)
       when "add_participant"
         handle_add_participant_input(input, state)
+      when "info"
+        handle_info_input(input, state)
       end
     when "roll"
       handle_roll_input(input, state)
