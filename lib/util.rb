@@ -37,6 +37,18 @@ module Util
       .min
   end
 
+  def Util.non_null_before(items, index)
+    non_null_indexes(items)
+      .select { |i| index.nil? || i < index }
+      .max
+  end
+
+  def Util.non_null_after(items, index)
+    non_null_indexes(items)
+      .select { |i| index.nil? || i > index }
+      .min
+  end
+
   def Util.set_at(items, item, index)
     items.length.times.map do |i|
       if i == index

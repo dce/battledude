@@ -71,12 +71,16 @@ module Input
           "current_char" => slot
         )
       else
-        c = Util.non_null_indexes(state["battle"])
-              .filter { |i| !state["current_char"] || i < state["current_char"] }
-              .max
+        c = Util.non_null_before(
+          state["battle"],
+          state["current_char"]
+        )
 
         if c
-          state.merge("current_char" => c, "message" => state["battle"][c]["note"])
+          state.merge(
+            "current_char" => c,
+            "message" => state["battle"][c]["note"]
+          )
         else
           state
         end
@@ -95,12 +99,16 @@ module Input
           "current_char" => slot
         )
       else
-        c = Util.non_null_indexes(state["battle"])
-              .filter { |i| !state["current_char"] || i > state["current_char"] }
-              .min
+        c = Util.non_null_after(
+          state["battle"],
+          state["current_char"]
+        )
 
         if c
-          state.merge("current_char" => c, "message" => state["battle"][c]["note"])
+          state.merge(
+            "current_char" => c,
+            "message" => state["battle"][c]["note"]
+          )
         else
           state
         end
@@ -119,7 +127,8 @@ module Input
             state["battle"][state["current_char"]],
             slot
           ),
-          "current_char" => slot
+          "current_char" => slot,
+          "selected_char" => nil
         )
       else
         state.merge("message" => "Couldn't add char")
