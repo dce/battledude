@@ -180,12 +180,15 @@ module Input
       slot = Util.null_before(state["battle"], state["current_char"])
 
       if slot
+        char = state["participant_list"][state["current_participant"]]
+
+        if char["url"]
+          data, state = Api.fetch_and_cache(char["url"], state)
+          char = Game.character_from_api_data(data)
+        end
+
         state.merge(
-          "battle" => Util.set_at(
-            state["battle"],
-            state["participant_list"][state["current_participant"]],
-            slot
-          ),
+          "battle" => Util.set_at(state["battle"], char, slot),
           "current_screen" => "battle",
           "current_char" => slot
         )

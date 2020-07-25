@@ -17,4 +17,14 @@ module Game
   def Game.monster_list(state)
     Api.fetch("/api/monsters").fetch("results")
   end
+
+  def Game.character_from_api_data(data)
+    {
+      "name" => data["name"],
+      "mhp"  => data["hit_points"],
+      "chp"  => data["hit_points"],
+      "ac"   => data["armor_class"],
+      "api"  => data["url"]
+    }
+  end
 end
