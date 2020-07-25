@@ -8,6 +8,13 @@ module Game
   end
 
   def Game.all_characters_list(state)
-    (state["players"] + state["npcs"]).sort_by { |c| c["name"] }
+    monsters = monster_list(state)
+
+    (state["players"] + state["npcs"] + monsters)
+      .sort_by { |c| c["name"] }
+  end
+
+  def Game.monster_list(state)
+    Api.fetch("/api/monsters").fetch("results")
   end
 end

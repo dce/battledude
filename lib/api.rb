@@ -4,7 +4,7 @@ module Api
   BASE = "https://www.dnd5eapi.co"
 
   def self.fetch(endpoint)
-    Net::HTTP.get(URI(BASE + endpoint))
+    JSON.parse(Net::HTTP.get(URI(BASE + endpoint)))
   end
 
   def self.fetch_and_cache(endpoint, state)
@@ -22,6 +22,6 @@ module Api
   end
 
   def self.pretty(data)
-    JSON.pretty_generate(JSON.parse(data)).split(/\n/)
+    JSON.pretty_generate(data).split(/\n/)
   end
 end
