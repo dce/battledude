@@ -149,11 +149,12 @@ module Input
 
       if char && char["api"]
         begin
-          state.merge(
-            "current_screen" => "info",
-            "info" => Api.fetch(char["api"]),
-            "info_offset" => 0
-          )
+          Api
+            .fetch_and_cache_info(char["api"], state)
+            .merge(
+              "current_screen" => "info",
+              "info_offset" => 0
+            )
         rescue => ex
           state.merge(
             "message" => Util.split_footer_string(ex.message)
