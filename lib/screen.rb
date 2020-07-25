@@ -104,7 +104,10 @@ module Screen
         win.attron(Curses::A_UNDERLINE) if state["selected_char"] == i
 
         win.setpos(line, cols[:name])
-        win.addstr(char["name"])
+
+        win.addstr(
+          char["name"][0, cols[:chp] - cols[:name] - 1]
+        )
 
         win.attroff(Curses::A_STANDOUT) if state["current_char"] == i
         win.attroff(Curses::A_UNDERLINE) if state["selected_char"] == i
