@@ -260,7 +260,7 @@ module Input
     height = Curses.lines - Screen::BOTTOM_HEIGHT - 2
 
     case input
-    when "j" # scroll down
+    when Curses::KEY_DOWN, "j"
       if state["info_offset"]
         if state["info_offset"] < state["info"].length - height
           Util.inc(state, "info_offset")
@@ -268,7 +268,7 @@ module Input
       else
         state.merge("info_offset" => 1)
       end
-    when "k" # scroll up
+    when Curses::KEY_UP, "k"
       if state["info_offset"] && state["info_offset"] > 0
         Util.dec(state, "info_offset")
       else
