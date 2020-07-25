@@ -70,7 +70,7 @@ module Input
         )
       else
         c = Util.non_null_indexes(state["battle"])
-              .filter { |i| i < state["current_char"] }
+              .filter { |i| !state["current_char"] || i < state["current_char"] }
               .max
 
         if c
@@ -92,7 +92,7 @@ module Input
         )
       else
         c = Util.non_null_indexes(state["battle"])
-              .filter { |i| i > state["current_char"] }
+              .filter { |i| !state["current_char"] || i > state["current_char"] }
               .min
 
         if c
