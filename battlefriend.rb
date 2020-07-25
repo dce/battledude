@@ -10,6 +10,8 @@ require "./lib/util"
 require "./lib/api"
 
 Curses.init_screen
+Curses.curs_set(0)
+Curses.noecho
 
 state = Game.load_state
 
