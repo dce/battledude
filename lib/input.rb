@@ -150,7 +150,8 @@ module Input
       if char && char["api"]
         state.merge(
           "current_screen" => "info",
-          "info" => Api.fetch(char["api"])
+          "info" => Api.fetch(char["api"]),
+          "info_offset" => 0
         )
       end
     end
@@ -237,6 +238,13 @@ module Input
       else
         state.merge("info_offset" => 0)
       end
+    when " "
+      new_offset = [
+        (state["info_offset"] || 0) + height - 1,
+        state["info"].length - height
+      ].min
+
+      state.merge("info_offset" => new_offset)
     when "q"
       state.merge("current_screen" => "battle")
     end
