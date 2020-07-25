@@ -201,12 +201,29 @@ module Input
     when "q"
       state.merge("current_screen" => "battle")
     when 'a'..'z'
-      pl = state["participant_list"]
-      char = pl.length.times.detect { |i| pl[i]["name"].downcase.start_with?(input) }
+      filter = (state["participant_filter"] || "") + input
 
-      if char
-        state.merge("current_participant" => char)
-      end
+      list = Game
+              .all_characters_list(state)
+              .filter { |c| c["name"].downcase.include?(filter) }
+
+      state.merge(
+        "participant_list" => list,
+        "participant_filter" => filter,
+        "current_participant" => 0
+      )
+    when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
+      filter = (state["participant_filter"] || "")[0..-2]
+
+      list = Game
+              .all_characters_list(state)
+              .filter { |c| c["name"].downcase.include?(filter) }
+
+      state.merge(
+        "participant_list" => list,
+        "participant_filter" => filter,
+        "current_participant" => 0
+      )
     end
   end
 
