@@ -138,10 +138,13 @@ module Input
         "current_char" => new_index
       )
     when "a"
+      participants, state = Game.all_characters_list(state)
+
       state.merge(
         "current_screen" => "add_participant",
-        "participant_list" => Game.all_characters_list(state),
-        "current_participant" => 0
+        "participant_list" => participants,
+        "current_participant" => 0,
+        "participant_filter" => nil
       )
     when "i"
       char = state["current_char"] &&
@@ -201,26 +204,30 @@ module Input
     when "q"
       state.merge("current_screen" => "battle")
     when 'a'..'z'
+      list, state = Game.all_characters_list(state)
+
       filter = (state["participant_filter"] || "") + input
 
-      list = Game
-              .all_characters_list(state)
-              .filter { |c| c["name"].downcase.include?(filter) }
+      filtered = list.filter do |c|
+        c["name"].downcase.include?(filter)
+      end
 
       state.merge(
-        "participant_list" => list,
+        "participant_list" => filtered,
         "participant_filter" => filter,
         "current_participant" => 0
       )
     when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
+      list, state = Game.all_characters_list(state)
+
       filter = (state["participant_filter"] || "")[0..-2]
 
-      list = Game
-              .all_characters_list(state)
-              .filter { |c| c["name"].downcase.include?(filter) }
+      filtered = list.filter do |c|
+        c["name"].downcase.include?(filter)
+      end
 
       state.merge(
-        "participant_list" => list,
+        "participant_list" => filtered,
         "participant_filter" => filter,
         "current_participant" => 0
       )
