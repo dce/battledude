@@ -200,6 +200,8 @@ module Input
       )
     when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
       state.merge("roll_dice" => state["roll_dice"][0..-2])
+    when "q"
+      state.merge("mode" => "main")
     else
       state
     end
