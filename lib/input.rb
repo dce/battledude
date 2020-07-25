@@ -158,7 +158,8 @@ module Input
           cached_state.merge(
             "current_screen" => "info",
             "info" => Api.pretty(response),
-            "info_offset" => 0
+            "info_offset" => nil,
+            "info_pan" => nil
           )
         rescue => ex
           state.merge(
@@ -273,6 +274,16 @@ module Input
         Util.dec(state, "info_offset")
       else
         state.merge("info_offset" => 0)
+      end
+    when Curses::KEY_RIGHT, "l"
+      if state["info_pan"]
+        Util.inc(state, "info_pan", 10)
+      else
+        state.merge("info_pan" => 10)
+      end
+    when Curses::KEY_LEFT, "h"
+      if state["info_pan"] && state["info_pan"] > 0
+        Util.dec(state, "info_pan", 10)
       end
     when " "
       new_offset = [

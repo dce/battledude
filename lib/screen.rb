@@ -158,10 +158,11 @@ module Screen
     width = Curses.cols - SIDEBAR_WIDTH - 4
     height = Curses.lines - BOTTOM_HEIGHT - 2
     offset = state["info_offset"] || 0
+    pan = state["info_pan"] || 0
 
     state["info"][offset, height].each_with_index do |str, i|
       win.setpos(i + 1, 2)
-      win.addstr(str[0, width])
+      win.addstr(str[pan, width])
     end
   end
 

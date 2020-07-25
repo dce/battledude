@@ -1,10 +1,10 @@
 module Util
-  def Util.inc(state, key)
-    state.merge(key => state[key] + 1)
+  def Util.inc(state, key, amount = 1)
+    state.merge(key => state[key] + amount)
   end
 
-  def Util.dec(state, key)
-    state.merge(key => state[key] - 1)
+  def Util.dec(state, key, amount = 1)
+    state.merge(key => state[key] - amount)
   end
 
   def Util.swap(arr, i1, i2)
