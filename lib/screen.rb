@@ -12,7 +12,12 @@ module Screen
   def Screen.draw_sidebar(state)
     sidebar = Curses::Window.new(
       Curses.lines - BOTTOM_HEIGHT, SIDEBAR_WIDTH, 0, 0)
-    sidebar.box("|", "-", "+")
+
+    if state["mode"] == "menu"
+      sidebar.box("|", "=", "+")
+    else
+      sidebar.box("|", "-", "+")
+    end
 
     menu_items.each_with_index do |(name, _), index|
       sidebar.setpos(index + 1, 2)
@@ -38,7 +43,13 @@ module Screen
   def Screen.draw_bottom(state)
     bottom = Curses::Window.new(
       BOTTOM_HEIGHT, Curses.cols, Curses.lines - BOTTOM_HEIGHT, 0)
-    bottom.box("|", "-", "+")
+
+    if state["mode"] == "roll"
+      bottom.box("|", "=", "+")
+    else
+      bottom.box("|", "-", "+")
+    end
+
     bottom.setpos(1, 2)
 
     if state["mode"] == "roll"
@@ -119,7 +130,13 @@ module Screen
   def Screen.draw_main(state)
     main = Curses::Window.new(
       Curses.lines - BOTTOM_HEIGHT, Curses.cols - SIDEBAR_WIDTH, 0, SIDEBAR_WIDTH)
-    main.box("|", "-", "+")
+
+    if state["mode"] == "main"
+      main.box("|", "=", "+")
+    else
+      main.box("|", "-", "+")
+    end
+
     main.keypad(true)
 
     case state["current_screen"]
