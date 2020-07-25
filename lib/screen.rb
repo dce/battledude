@@ -138,15 +138,9 @@ module Screen
   def Screen.draw_info(win, state)
     width = Curses.cols - SIDEBAR_WIDTH - 4
     height = Curses.lines - BOTTOM_HEIGHT - 2
-    strs = state["info"].to_s.split("\n")
     offset = state["info_offset"] || 0
 
-    offset = [offset, 0].max
-    offset = [offset, strs.length - height].min
-
-    strs = state["info"].to_s.split("\n")[offset, height]
-
-    strs.each_with_index do |str, i|
+    state["info"][offset, height].each_with_index do |str, i|
       win.setpos(i + 1, 2)
       win.addstr(str[0, width])
     end

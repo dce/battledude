@@ -8,6 +8,6 @@ module Api
       JSON.parse(
         Net::HTTP.get(URI(BASE + endpoint))
       )
-    )
+    ).split(/\n/)
   end
 end
