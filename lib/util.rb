@@ -14,18 +14,27 @@ module Util
   end
 
   def Util.non_null_indexes(arr)
-    0.upto(arr.length).select do |i|
+    arr.length.times.select do |i|
+      arr[i]
+    end
+  end
+
+  def Util.null_indexes(arr)
+    arr.length.times.reject do |i|
       arr[i]
     end
   end
 
   def Util.null_before(items, index)
-    items
-      .length
-      .times
-      .reject { |i| items[i] }
+    null_indexes(items)
       .select { |i| index.nil? || i < index }
       .max
+  end
+
+  def Util.null_after(items, index)
+    null_indexes(items)
+      .select { |i| index.nil? || i > index }
+      .min
   end
 
   def Util.set_at(items, item, index)
