@@ -148,11 +148,17 @@ module Input
         state["battle"][state["current_char"]]
 
       if char && char["api"]
-        state.merge(
-          "current_screen" => "info",
-          "info" => Api.fetch(char["api"]),
-          "info_offset" => 0
-        )
+        begin
+          state.merge(
+            "current_screen" => "info",
+            "info" => Api.fetch(char["api"]),
+            "info_offset" => 0
+          )
+        rescue => ex
+          state.merge(
+            "message" => Util.split_footer_string(ex.message)
+          )
+        end
       end
     end
   end
