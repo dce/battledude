@@ -43,13 +43,10 @@ module Util
   end
 
   def Util.parse_dice_string(str)
-    str.scan(/(\d*)(d?\d+)/).flat_map do |count, die|
-      if count == ""
-        [die]
-      else
-        [die] * count.to_i
-      end
-    end
+    str
+      .scan(/(\d+)(d\d+)|(d\d+)|(\d+)/)
+      .map { |m| m.compact.reverse }
+      .flat_map { |die, count = 1| [die] * count.to_i }
   end
 
   def Util.eval_die(die)
