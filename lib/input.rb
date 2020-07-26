@@ -55,13 +55,12 @@ module Input
       state.merge("battle" => chars)
     when Curses::KEY_DOWN, "j" # these move backward
       if state["selected_char"] && state["selected_char"] > 0
+        battle = state["battle"]
         selected = state["selected_char"]
 
-        slot = if state["battle"][selected - 1]
-          Util.null_before(state["battle"], selected)
-        end || selected - 1
+        slot = Util.null_before(battle, selected) || selected - 1
 
-        battle = Util.swap(state["battle"], selected, slot)
+        battle = Util.swap(battle, selected, slot)
 
         battle.pop while battle.length > 20 && battle.last.nil?
 
@@ -87,14 +86,13 @@ module Input
       end
     when Curses::KEY_UP, "k" # these move backward
       if state["selected_char"]
+        battle = state["battle"]
         selected = state["selected_char"]
 
-        slot = if state["battle"][selected + 1]
-          Util.null_after(state["battle"], selected)
-        end || selected + 1
+        slot = Util.null_after(battle, selected) || battle.length
 
         state.merge(
-          "battle" => Util.swap(state["battle"], selected, slot),
+          "battle" => Util.swap(battle, selected, slot),
           "selected_char" => slot,
           "current_char" => slot
         )
