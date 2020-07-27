@@ -1,8 +1,7 @@
-* [ ] Add other characters to a battle
-* [ ] Remove characters from a battle
-* [ ] Add characters to a group
-  * [ ] Remove them?
-  * [ ] Ungroup them?
-  * [ ] Move them in bulk
-* How does initiative order work here?
-* Add notes
+* [ ] Track windows + updates
+* [ ] Add event layer
+  * I.e. input triggers events; listeners change state
+* [ ] Editable character (battle participant) notes
+* [ ] Notes page
+* [ ] Character add/edit/delete
+  * Name / HP / AC /info
