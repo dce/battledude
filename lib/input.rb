@@ -345,7 +345,13 @@ module Input
     when 'q'
       state.merge("exit" => true)
     else
-      state.merge("message" => "Unrecognized key: '#{input}'")
+      state.merge(
+        "message" =>
+        [
+          "Unrecognized key: #{ input.inspect }",
+          ("(#{ input.ord })" unless input == "")
+        ].compact.join(" ")
+      )
     end
   end
 end
