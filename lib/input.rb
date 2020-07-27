@@ -220,10 +220,8 @@ module Input
       list, state = Game.all_characters_list(state)
 
       filter = (state["participant_filter"] || "") + input
-
-      filtered = list.filter do |c|
-        c["name"].downcase.include?(filter)
-      end
+      re = Util.search_regex(filter)
+      filtered = list.filter { |c| c["name"] =~ re }
 
       state.merge(
         "participant_list" => filtered,
@@ -234,10 +232,8 @@ module Input
       list, state = Game.all_characters_list(state)
 
       filter = (state["participant_filter"] || "")[0..-2]
-
-      filtered = list.filter do |c|
-        c["name"].downcase.include?(filter)
-      end
+      re = Util.search_regex(filter)
+      filtered = list.filter { |c| c["name"] =~ re }
 
       state.merge(
         "participant_list" => filtered,

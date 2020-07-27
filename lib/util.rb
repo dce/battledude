@@ -98,4 +98,8 @@ module Util
       str[i...(i + line_length)].strip
     end
   end
+
+  def Util.search_regex(str)
+    /#{ str.chars.map { |c| "(#{c})" }.join("(.*?)") }/i
+  end
 end

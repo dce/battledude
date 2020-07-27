@@ -140,17 +140,23 @@ module Screen
 
     state["participant_list"][offset, height].each_with_index do |char, i|
       current = state["current_participant"] - offset == i
-      head, match, tail = char["name"]
-        .split(/(#{state["participant_filter"]})/i, 2)
+      filter = state["participant_filter"]
+
+      strs = if filter && filter != ""
+               char["name"].split(Util.search_regex(filter))
+             else
+               [char["name"]]
+             end
 
       win.setpos(i + 2, 2)
-      win.attron(Curses::A_STANDOUT) if current
-      win.addstr(head)
-      win.attron(Curses::A_UNDERLINE)
-      win.addstr(match)
-      win.attroff(Curses::A_UNDERLINE)
-      win.addstr(tail)
-      win.attroff(Curses::A_STANDOUT) if current
+
+      strs.each_with_index do |str, j|
+        win.attron(Curses::A_STANDOUT) if current
+        win.attron(Curses::A_UNDERLINE) if j % 2 == 1
+        win.addstr(str)
+        win.attroff(Curses::A_UNDERLINE) if j % 2 == 1
+        win.attroff(Curses::A_STANDOUT) if current
+      end
     end
   end
 
