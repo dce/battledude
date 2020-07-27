@@ -216,7 +216,7 @@ module Input
       end
     when "q"
       state.merge("current_screen" => "battle")
-    when 'a'..'z'
+    when "a".."z"
       list, state = Game.all_characters_list(state)
 
       filter = (state["participant_filter"] || "") + input
