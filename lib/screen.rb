@@ -194,13 +194,7 @@ module Screen
     win.addstr("Editing #{char["name"]}")
     win.attroff(Curses::A_UNDERLINE)
 
-    fields = {
-      "name" => "Name",
-      "mhp" => "HP",
-      "ac" => "AC"
-    }
-
-    fields.each_with_index do |(key, label), i|
+    Game.character_fields.each_with_index do |(key, label), i|
       win.setpos(i + 2, 2)
       win.attron(Curses::A_STANDOUT) if state["current_field"] == i
       win.addstr(label)

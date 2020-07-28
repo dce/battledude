@@ -31,4 +31,12 @@ module Game
       "api"  => data["url"]
     }
   end
+
+  def Game.character_fields
+    [
+      ["name", "Name"],
+      ["mhp", "HP"],
+      ["ac", "AC"]
+    ]
+  end
 end
