@@ -194,11 +194,22 @@ module Screen
     win.addstr("Editing #{char["name"]}")
     win.attroff(Curses::A_UNDERLINE)
 
-    form = Curses::Form.new(
-      [Curses::Field.new(1, 30, 2, 2, 0, 0)]
-    )
+    fields = {
+      "name" => "Name",
+      "mhp" => "HP",
+      "ac" => "AC"
+    }
 
-    form.set_win(win)
+    fields.each_with_index do |(key, label), i|
+      win.setpos(i + 2, 2)
+      win.attron(Curses::A_STANDOUT) if state["current_field"] == i
+      win.addstr(label)
+      win.attroff(Curses::A_STANDOUT) if state["current_field"] == i
+      win.setpos(i + 2, 11)
+      win.attron(Curses::A_UNDERLINE)
+      win.addstr(char[key].to_s.ljust(10))
+      win.attroff(Curses::A_UNDERLINE)
+    end
   end
 
   def Screen.draw_main(state)
