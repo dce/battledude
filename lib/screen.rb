@@ -5,7 +5,7 @@ module Screen
   def Screen.menu_items
     [
       ["Battle", "battle"],
-      ["Character", "character"]
+      ["Characters", "character_list"]
     ]
   end
 
@@ -172,6 +172,29 @@ module Screen
     end
   end
 
+  def Screen.draw_character_list(win, state)
+    win.setpos(1, 2)
+    win.attron(Curses::A_UNDERLINE)
+    win.addstr("Characters")
+    win.attroff(Curses::A_UNDERLINE)
+
+    state["players"].each_with_index do |char, i|
+      win.setpos(i + 2, 2)
+      win.attron(Curses::A_STANDOUT) if i == state["current_char"]
+      win.addstr(char["name"])
+      win.attroff(Curses::A_STANDOUT) if i == state["current_char"]
+    end
+  end
+
+  def Screen.draw_character_edit(win, state)
+    char = state["players"][state["current_char"]]
+
+    win.setpos(1, 2)
+    win.attron(Curses::A_UNDERLINE)
+    win.addstr("Editing #{char["name"]}")
+    win.attroff(Curses::A_UNDERLINE)
+  end
+
   def Screen.draw_main(state)
     main = Curses::Window.new(
       Curses.lines - BOTTOM_HEIGHT, Curses.cols - SIDEBAR_WIDTH, 0, SIDEBAR_WIDTH)
@@ -191,6 +214,10 @@ module Screen
       draw_add_participant(main, state)
     when "info"
       draw_info(main, state)
+    when "character_list"
+      draw_character_list(main, state)
+    when "character_edit"
+      draw_character_edit(main, state)
     end
 
     main

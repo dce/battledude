@@ -15,11 +15,18 @@ module Input
           .merge("current_screen" => Screen.menu_items[current - 1].last)
       end
     when Curses::KEY_RIGHT, "l"
-      if entry.last == "battle"
+      case entry.last
+      when "battle"
         state.merge(
           "mode" => "main",
           "current_screen" => entry.last,
           "current_char" => Util.non_null_indexes(state["battle"]).max
+        )
+      when "character_list"
+        state.merge(
+          "mode" => "main",
+          "current_screen" => entry.last,
+          "current_char" => 0
         )
       end
     end
@@ -314,6 +321,30 @@ module Input
     end
   end
 
+  def Input.handle_character_list_input(input, state)
+    current = state["current_char"]
+
+    case input
+    when Curses::KEY_DOWN, "j"
+      if current < state["players"].count - 1
+        Util.inc(state, "current_char")
+      end
+    when Curses::KEY_UP, "k"
+      if current > 0
+        Util.dec(state, "current_char")
+      end
+    when Curses::KEY_LEFT, "h"
+      state.merge(
+        "mode" => "menu",
+        "current_char" => nil
+      )
+    when "\n"
+      state.merge(
+        "current_screen" => "character_edit"
+      )
+    end
+  end
+
   def Input.handle_input(input, state)
     mode = state["mode"]
 
@@ -328,6 +359,8 @@ module Input
         handle_add_participant_input(input, state)
       when "info"
         handle_info_input(input, state)
+      when "character_list"
+        handle_character_list_input(input, state)
       end
     when "roll"
       handle_roll_input(input, state)
