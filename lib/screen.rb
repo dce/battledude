@@ -187,7 +187,7 @@ module Screen
   end
 
   def Screen.draw_character_edit(win, state)
-    char = state["players"][state["current_char"]]
+    char = state["character"]
 
     win.setpos(1, 2)
     win.attron(Curses::A_UNDERLINE)

@@ -341,23 +341,20 @@ module Input
     when "\n"
       state.merge(
         "current_screen" => "character_edit",
-        "current_field" => 0
+        "current_field" => 0,
+        "character" => state["players"][state["current_char"]]
       )
     end
   end
 
   def Input.handle_character_edit_input(input, state)
     case input
-    when /a-zA-Z0-9/
-      char = state["players"][i] # state["char_being_edited"] or something
-      field = Game.character_fields[state["current_field"]]
+    when /[a-zA-Z0-9]/
+      char = state["character"]
+      field = Game.character_fields[state["current_field"]].first
         
-      # do some work
-      # this isn't really going to work -- we don't want to edit
-      # the player in real-time -- need to submit + parse
-      
       state.merge(
-        "players" => Util.set_at(state["players"], char, i)
+        "character" => char.merge(field => char[field] + input)
       )
     end
   end
