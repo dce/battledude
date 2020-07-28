@@ -193,6 +193,12 @@ module Screen
     win.attron(Curses::A_UNDERLINE)
     win.addstr("Editing #{char["name"]}")
     win.attroff(Curses::A_UNDERLINE)
+
+    form = Curses::Form.new(
+      [Curses::Field.new(1, 30, 2, 2, 0, 0)]
+    )
+
+    form.set_win(win)
   end
 
   def Screen.draw_main(state)
