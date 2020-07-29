@@ -32,10 +32,19 @@ module Game
     }
   end
 
+  def Game.character_from_player(player)
+    {
+      "name" => player["name"],
+      "mhp"  => player["hp"],
+      "chp"  => player["hp"],
+      "ac"   => player["ac"]
+    }
+  end
+
   def Game.character_fields
     [
       ["name", "Name"],
-      ["mhp", "HP"],
+      ["hp", "HP"],
       ["ac", "AC"]
     ]
   end

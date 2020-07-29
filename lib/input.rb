@@ -202,11 +202,13 @@ module Input
       slot = Util.null_before(state["battle"], state["current_char"])
 
       if slot
-        char = state["participant_list"][state["current_participant"]]
+        part = state["participant_list"][state["current_participant"]]
 
-        if char["url"]
-          data, state = Api.fetch_and_cache(char["url"], state)
-          char = Game.character_from_api_data(data)
+        char = if part["url"]
+          data, state = Api.fetch_and_cache(part["url"], state)
+          Game.character_from_api_data(data)
+        else
+          Game.character_from_player(part)
         end
 
         state.merge(
@@ -375,6 +377,19 @@ module Input
     when Curses::KEY_UP, Util.ord_eq?(353)
       if current_input > 0
         Util.dec(state, "current_input")
+      end
+    when "\n"
+      if current_input == Game.character_fields.length
+        state.merge(
+          "players" => Util.set_at(
+            state["players"],
+            char,
+            state["current_char"]
+          ),
+          "current_screen" => "player_list"
+        )
+      elsif current_input == Game.character_fields.length + 1
+        state.merge("current_screen" => "player_list")
       end
     end
   end
