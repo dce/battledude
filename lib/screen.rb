@@ -5,7 +5,7 @@ module Screen
   def Screen.menu_items
     [
       ["Battle", "battle"],
-      ["Characters", "character_list"]
+      ["Players", "player_list"]
     ]
   end
 
@@ -172,10 +172,10 @@ module Screen
     end
   end
 
-  def Screen.draw_character_list(win, state)
+  def Screen.draw_player_list(win, state)
     win.setpos(1, 2)
     win.attron(Curses::A_UNDERLINE)
-    win.addstr("Characters")
+    win.addstr("Players")
     win.attroff(Curses::A_UNDERLINE)
 
     state["players"].each_with_index do |char, i|
@@ -186,7 +186,7 @@ module Screen
     end
   end
 
-  def Screen.draw_character_edit(win, state)
+  def Screen.draw_player_edit(win, state)
     char = state["character"]
 
     win.setpos(1, 2)
@@ -195,15 +195,38 @@ module Screen
     win.attroff(Curses::A_UNDERLINE)
 
     Game.character_fields.each_with_index do |(key, label), i|
-      win.setpos(i + 2, 2)
-      win.attron(Curses::A_STANDOUT) if state["current_field"] == i
+      win.setpos(i + 3, 2)
+      win.attron(Curses::A_STANDOUT) if state["current_input"] == i
       win.addstr(label)
-      win.attroff(Curses::A_STANDOUT) if state["current_field"] == i
-      win.setpos(i + 2, 11)
+      win.attroff(Curses::A_STANDOUT) if state["current_input"] == i
+      win.setpos(i + 3, 12)
       win.attron(Curses::A_UNDERLINE)
       win.addstr(char[key].to_s.ljust(10))
       win.attroff(Curses::A_UNDERLINE)
     end
+
+    opt = if state["current_input"] == Game.character_fields.length
+      Curses::A_STANDOUT
+    else
+      Curses::A_UNDERLINE
+    end
+
+    win.setpos(Game.character_fields.length + 4, 2)
+    win.attron(opt)
+    win.addstr("[ SAVE ]")
+    win.attroff(opt)
+
+
+    opt = if state["current_input"] == Game.character_fields.length + 1
+      Curses::A_STANDOUT
+    else
+      Curses::A_UNDERLINE
+    end
+
+    win.setpos(Game.character_fields.length + 4, 12)
+    win.attron(opt)
+    win.addstr("[ CANCEL ]")
+    win.attroff(opt)
   end
 
   def Screen.draw_main(state)
@@ -225,10 +248,10 @@ module Screen
       draw_add_participant(main, state)
     when "info"
       draw_info(main, state)
-    when "character_list"
-      draw_character_list(main, state)
-    when "character_edit"
-      draw_character_edit(main, state)
+    when "player_list"
+      draw_player_list(main, state)
+    when "player_edit"
+      draw_player_edit(main, state)
     end
 
     main

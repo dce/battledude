@@ -22,7 +22,7 @@ module Input
           "current_screen" => entry.last,
           "current_char" => Util.non_null_indexes(state["battle"]).max
         )
-      when "character_list"
+      when "player_list"
         state.merge(
           "mode" => "main",
           "current_screen" => entry.last,
@@ -321,7 +321,7 @@ module Input
     end
   end
 
-  def Input.handle_character_list_input(input, state)
+  def Input.handle_player_list_input(input, state)
     current = state["current_char"]
 
     case input
@@ -340,22 +340,42 @@ module Input
       )
     when "\n"
       state.merge(
-        "current_screen" => "character_edit",
-        "current_field" => 0,
+        "current_screen" => "player_edit",
+        "current_input" => 0,
         "character" => state["players"][state["current_char"]]
       )
     end
   end
 
-  def Input.handle_character_edit_input(input, state)
+  def Input.handle_player_edit_input(input, state)
+    char = state["character"]
+    current_input = state["current_input"]
+
     case input
-    when /[a-zA-Z0-9]/
-      char = state["character"]
-      field = Game.character_fields[state["current_field"]].first
-        
-      state.merge(
-        "character" => char.merge(field => char[field] + input)
-      )
+    when /[a-zA-Z0-9 ]/
+      if Game.character_fields[current_input]
+        field = Game.character_fields[current_input].first
+
+        state.merge(
+          "character" => char.merge(field => char[field].to_s + input)
+        )
+      end
+    when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
+      if Game.character_fields[current_input]
+        field = Game.character_fields[current_input].first
+
+        state.merge(
+          "character" => char.merge(field => char[field].to_s[0..-2])
+        )
+      end
+    when Curses::KEY_DOWN, "\t"
+      if current_input < Game.character_fields.length + 1
+        Util.inc(state, "current_input")
+      end
+    when Curses::KEY_UP, Util.ord_eq?(353)
+      if current_input > 0
+        Util.dec(state, "current_input")
+      end
     end
   end
 
@@ -373,10 +393,10 @@ module Input
         handle_add_participant_input(input, state)
       when "info"
         handle_info_input(input, state)
-      when "character_list"
-        handle_character_list_input(input, state)
-      when "character_edit"
-        handle_character_edit_input(input, state)
+      when "player_list"
+        handle_player_list_input(input, state)
+      when "player_edit"
+        handle_player_edit_input(input, state)
       end
     when "roll"
       handle_roll_input(input, state)
