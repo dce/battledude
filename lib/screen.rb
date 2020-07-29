@@ -44,15 +44,19 @@ module Screen
     bottom = Curses::Window.new(
       BOTTOM_HEIGHT, Curses.cols, Curses.lines - BOTTOM_HEIGHT, 0)
 
-    if state["mode"] == "roll"
+    if %w(roll edit_note).include?(state["mode"])
       bottom.box("|", "=", "+")
     else
       bottom.box("|", "-", "+")
     end
 
-    if state["mode"] == "roll"
+    case state["mode"]
+    when "roll"
       bottom.setpos(1, 2)
       bottom.addstr("> " + state["roll_dice"].to_s)
+    when "edit_note"
+      bottom.setpos(1, 2)
+      bottom.addstr("> " + state["note"].to_s)
     else
       msgs = if state["message"].is_a?(Array)
                state["message"]

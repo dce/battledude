@@ -185,6 +185,16 @@ module Input
           )
         end
       end
+    when "n"
+      char = state["current_char"] &&
+        state["battle"][state["current_char"]]
+
+      if char
+        state.merge(
+          "mode" => "edit_note",
+          "note" => char["note"]
+        )
+      end
     end
   end
 
@@ -394,6 +404,29 @@ module Input
     end
   end
 
+  def Input.handle_edit_note_input(input, state)
+    case input
+    when "\n"
+      char = state["battle"][state["current_char"]].merge(
+        "note" => state["note"]
+      )
+
+      state.merge(
+        "battle" => Util.set_at(
+          state["battle"],
+          char,
+          state["current_char"]
+        ),
+        "mode" => "main",
+        "message" => state["note"]
+      )
+    when /[[:print:]]/
+      state.merge("note" => state["note"].to_s + input)
+    when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
+      state.merge("note" => state["note"].to_s[0..-2])
+    end
+  end
+
   def Input.handle_input(input, state)
     mode = state["mode"]
 
@@ -415,6 +448,8 @@ module Input
       end
     when "roll"
       handle_roll_input(input, state)
+    when "edit_note"
+      handle_edit_note_input(input, state)
     end || case input
     when 'r'
       state.merge("mode" => "roll", "roll_dice" => "")
