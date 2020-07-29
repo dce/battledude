@@ -1,7 +1,7 @@
 * [ ] Track windows + updates
 * [ ] Add event layer
   * I.e. input triggers events; listeners change state
-* [ ] Editable character (battle participant) notes
+* [x] Editable character (battle participant) notes
 * [ ] Notes page
-* [ ] Character add/edit/delete
+* [ ] Character add/delete
   * Name / HP / AC /info
