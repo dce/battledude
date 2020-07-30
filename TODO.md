@@ -1,7 +1,12 @@
 * [ ] Track windows + updates
 * [ ] Add event layer
   * I.e. input triggers events; listeners change state
-* [x] Editable character (battle participant) notes
+  * Or some other way to refactor & reduce duplication
+  * I.e. component system
 * [ ] Notes page
-* [ ] Character add/delete
-  * Name / HP / AC /info
+* [ ] Player add/delete
+* [ ] NPC add/delete
+* [ ] NPC extended info
+
+* [x] Editable character (battle participant) notes
+* [x] Edit NPC states
