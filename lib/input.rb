@@ -22,7 +22,7 @@ module Input
           "current_screen" => entry.last,
           "current_char" => Util.non_null_indexes(state["battle"]).max
         )
-      when "player_list"
+      when "player_list", "npc_list"
         state.merge(
           "mode" => "main",
           "current_screen" => entry.last,
@@ -427,6 +427,77 @@ module Input
     end
   end
 
+  def Input.handle_npc_list_input(input, state)
+    current = state["current_char"]
+
+    case input
+    when Curses::KEY_DOWN, "j"
+      if current < state["npcs"].count - 1
+        Util.inc(state, "current_char")
+      end
+    when Curses::KEY_UP, "k"
+      if current > 0
+        Util.dec(state, "current_char")
+      end
+    when Curses::KEY_LEFT, "h"
+      state.merge(
+        "mode" => "menu",
+        "current_char" => nil
+      )
+    when "\n"
+      state.merge(
+        "current_screen" => "npc_edit",
+        "current_input" => 0,
+        "character" => state["npcs"][state["current_char"]]
+      )
+    end
+  end
+
+  def Input.handle_npc_edit_input(input, state)
+    char = state["character"]
+    current_input = state["current_input"]
+
+    case input
+    when /[a-zA-Z0-9 ]/
+      if Game.character_fields[current_input]
+        field = Game.character_fields[current_input].first
+
+        state.merge(
+          "character" => char.merge(field => char[field].to_s + input)
+        )
+      end
+    when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
+      if Game.character_fields[current_input]
+        field = Game.character_fields[current_input].first
+
+        state.merge(
+          "character" => char.merge(field => char[field].to_s[0..-2])
+        )
+      end
+    when Curses::KEY_DOWN, "\t"
+      if current_input < Game.character_fields.length + 1
+        Util.inc(state, "current_input")
+      end
+    when Curses::KEY_UP, Util.ord_eq?(353)
+      if current_input > 0
+        Util.dec(state, "current_input")
+      end
+    when "\n"
+      if current_input == Game.character_fields.length
+        state.merge(
+          "npcs" => Util.set_at(
+            state["npcs"],
+            char,
+            state["current_char"]
+          ),
+          "current_screen" => "npc_list"
+        )
+      elsif current_input == Game.character_fields.length + 1
+        state.merge("current_screen" => "npc_list")
+      end
+    end
+  end
+
   def Input.handle_input(input, state)
     mode = state["mode"]
 
@@ -445,6 +516,10 @@ module Input
         handle_player_list_input(input, state)
       when "player_edit"
         handle_player_edit_input(input, state)
+      when "npc_list"
+        handle_npc_list_input(input, state)
+      when "npc_edit"
+        handle_npc_edit_input(input, state)
       end
     when "roll"
       handle_roll_input(input, state)

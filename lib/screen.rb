@@ -5,7 +5,8 @@ module Screen
   def Screen.menu_items
     [
       ["Battle", "battle"],
-      ["Players", "player_list"]
+      ["Players", "player_list"],
+      ["NPCs", "npc_list"]
     ]
   end
 
@@ -217,7 +218,7 @@ module Screen
 
     win.setpos(Game.character_fields.length + 4, 2)
     win.attron(opt)
-    win.addstr("[ SAVE ]")
+    win.addstr("[ Save ]")
     win.attroff(opt)
 
 
@@ -229,7 +230,63 @@ module Screen
 
     win.setpos(Game.character_fields.length + 4, 12)
     win.attron(opt)
-    win.addstr("[ CANCEL ]")
+    win.addstr("[ Cancel ]")
+    win.attroff(opt)
+  end
+
+  def Screen.draw_npc_list(win, state)
+    win.setpos(1, 2)
+    win.attron(Curses::A_UNDERLINE)
+    win.addstr("NPCs")
+    win.attroff(Curses::A_UNDERLINE)
+
+    state["npcs"].each_with_index do |char, i|
+      win.setpos(i + 2, 2)
+      win.attron(Curses::A_STANDOUT) if i == state["current_char"]
+      win.addstr(char["name"])
+      win.attroff(Curses::A_STANDOUT) if i == state["current_char"]
+    end
+  end
+
+  def Screen.draw_npc_edit(win, state)
+    char = state["character"]
+
+    win.setpos(1, 2)
+    win.attron(Curses::A_UNDERLINE)
+    win.addstr("Editing #{char["name"]}")
+    win.attroff(Curses::A_UNDERLINE)
+
+    Game.character_fields.each_with_index do |(key, label), i|
+      win.setpos(i + 3, 2)
+      win.attron(Curses::A_STANDOUT) if state["current_input"] == i
+      win.addstr(label)
+      win.attroff(Curses::A_STANDOUT) if state["current_input"] == i
+      win.setpos(i + 3, 12)
+      win.attron(Curses::A_UNDERLINE)
+      win.addstr(char[key].to_s.ljust(10))
+      win.attroff(Curses::A_UNDERLINE)
+    end
+
+    opt = if state["current_input"] == Game.character_fields.length
+      Curses::A_STANDOUT
+    else
+      Curses::A_UNDERLINE
+    end
+
+    win.setpos(Game.character_fields.length + 4, 2)
+    win.attron(opt)
+    win.addstr("[ Save ]")
+    win.attroff(opt)
+
+    opt = if state["current_input"] == Game.character_fields.length + 1
+      Curses::A_STANDOUT
+    else
+      Curses::A_UNDERLINE
+    end
+
+    win.setpos(Game.character_fields.length + 4, 12)
+    win.attron(opt)
+    win.addstr("[ Cancel ]")
     win.attroff(opt)
   end
 
@@ -256,6 +313,10 @@ module Screen
       draw_player_list(main, state)
     when "player_edit"
       draw_player_edit(main, state)
+    when "npc_list"
+      draw_npc_list(main, state)
+    when "npc_edit"
+      draw_npc_edit(main, state)
     end
 
     main
