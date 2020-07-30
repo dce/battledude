@@ -539,7 +539,7 @@ module Input
         "message" =>
         [
           "Unrecognized key: #{ input.inspect }",
-          ("(#{ input.ord })" unless input == "")
+          ("(#{ input.ord })" unless input.nil? || input == "")
         ].compact.join(" ")
       )
     end
