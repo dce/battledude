@@ -5,8 +5,11 @@
   * I.e. component system
 * [ ] Notes page
 * [ ] Player add/delete
-* [ ] NPC add/delete
 * [ ] NPC extended info
+* [ ] Undo
+  * This would probably mean marking data changes
+    vs. UI changes
 
+* [x] NPC add/delete
 * [x] Editable character (battle participant) notes
 * [x] Edit NPC states
