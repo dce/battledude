@@ -450,6 +450,19 @@ module Input
         "current_input" => 0,
         "character" => state["npcs"][state["current_char"]]
       )
+    when "a"
+      state.merge(
+        "current_screen" => "npc_add",
+        "current_input" => 0,
+        "character" => {}
+      )
+    when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
+      npcs = state["npcs"].reject.with_index { |_, i| i == state["current_char"] }
+
+      state.merge(
+        "npcs" => npcs,
+        "current_char" => [state["current_char"], npcs.length - 1].min
+      )
     end
   end
 
@@ -498,6 +511,47 @@ module Input
     end
   end
 
+  def Input.handle_npc_add_input(input, state)
+    char = state["character"]
+    current_input = state["current_input"]
+
+    case input
+    when /[a-zA-Z0-9 ]/
+      if Game.character_fields[current_input]
+        field = Game.character_fields[current_input].first
+
+        state.merge(
+          "character" => char.merge(field => char[field].to_s + input)
+        )
+      end
+    when Curses::KEY_BACKSPACE, Util.ord_eq?(127)
+      if Game.character_fields[current_input]
+        field = Game.character_fields[current_input].first
+
+        state.merge(
+          "character" => char.merge(field => char[field].to_s[0..-2])
+        )
+      end
+    when Curses::KEY_DOWN, "\t"
+      if current_input < Game.character_fields.length + 1
+        Util.inc(state, "current_input")
+      end
+    when Curses::KEY_UP, Util.ord_eq?(353)
+      if current_input > 0
+        Util.dec(state, "current_input")
+      end
+    when "\n"
+      if current_input == Game.character_fields.length
+        state.merge(
+          "npcs" => state["npcs"] + [char],
+          "current_screen" => "npc_list"
+        )
+      elsif current_input == Game.character_fields.length + 1
+        state.merge("current_screen" => "npc_list")
+      end
+    end
+  end
+
   def Input.handle_input(input, state)
     mode = state["mode"]
 
@@ -520,6 +574,8 @@ module Input
         handle_npc_list_input(input, state)
       when "npc_edit"
         handle_npc_edit_input(input, state)
+      when "npc_add"
+        handle_npc_add_input(input, state)
       end
     when "roll"
       handle_roll_input(input, state)
