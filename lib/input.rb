@@ -195,6 +195,12 @@ module Input
           "note" => char["note"]
         )
       end
+    when "g"
+      state.merge("current_char" =>
+        Util.non_null_indexes(state["battle"]).last)
+    when "G"
+      state.merge("current_char" =>
+        Util.non_null_indexes(state["battle"]).first)
     end
   end
 
