@@ -21,7 +21,7 @@ class Component
 
   def handle(input)
     events = props[:children] && props[:children].detect do |child|
-      child.handle(input)
+      child.props["active"] == true && child.handle(input)
     end
 
     return events if events
@@ -30,17 +30,17 @@ class Component
       if chars === input
         events = instance_eval(&fn)
 
-        unless events.is_a?(Array) && events.all? { |e| e.is_a?(Array) }
-          raise "Handlers must return event array"
+        if valid_events_array?(events)
+          events
+        else
+          []
         end
-
-        return events
       end
     end
   end
 
-  def render
-
+  def render(window)
+    raise NotImplementedError
   end
 
   private
@@ -51,5 +51,11 @@ class Component
 
   def set_state(key, value)
     self.state = state.merge(key => value)
+  end
+
+  def valid_events_array?(events)
+    events.is_a?(Array) && events.all? do |e|
+      e.is_a?(Array) && e.first.is_a?(Symbol)
+    end
   end
 end
