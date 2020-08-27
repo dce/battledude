@@ -35,9 +35,9 @@ module Game
   def Game.character_from_player(player)
     {
       "name" => player["name"],
-      "mhp"  => player["hp"],
-      "chp"  => player["hp"],
-      "ac"   => player["ac"]
+      "mhp"  => player["hp"].to_i,
+      "chp"  => player["hp"].to_i,
+      "ac"   => player["ac"].to_i
     }
   end
 
