@@ -65,9 +65,12 @@ module Util
 
   def Util.parse_dice_string(str)
     str
-      .scan(/(\d+)(d\d+)|(d\d+)|(\d+)/)
+      .scan(/([\+\-]?)((\d+)(d\d+)|(d\d+)|(\d+))/)
       .map { |m| m.compact.reverse }
-      .flat_map { |die, count = 1| [die] * count.to_i }
+      .flat_map do |die, count = 1, _, sign|
+        opp = sign == "-" ? :sub : :add
+        [[die, opp]] * count.to_i
+      end
   end
 
   def Util.eval_die(die)
@@ -79,12 +82,24 @@ module Util
   end
 
   def Util.eval_dice(dice)
-    results = dice.map { |die| [die, eval_die(die)] }
+    results = dice.map { |die, opp| [die, opp, eval_die(die)] }
 
-    results
-      .map { |die, result| "(#{die} = #{result})" }
-      .join(" + ")
-      .concat(" = #{ results.sum { |_, r| r } }")
+    rolls = results.map do |result|
+      die, opp, roll = result
+
+      if result == results.first
+        "(#{die} = #{roll})"
+      else
+        sign = opp == :add ? "+" : "-"
+        " #{sign} (#{die} = #{roll})"
+      end
+    end
+
+    sum = results.inject(0) do |total, (die, opp, roll)|
+      opp == :add ? total + roll : total - roll
+    end
+
+    rolls.join.concat(" = #{ sum }")
   end
 
   def Util.eval_dice_string(str)

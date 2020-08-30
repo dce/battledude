@@ -279,7 +279,7 @@ module Input
 
   def Input.handle_roll_input(input, state)
     case input
-    when "d", "+", "0".."9"
+    when "d", "+", "-", "0".."9"
       state.merge("roll_dice" => state["roll_dice"] + input)
     when "\n"
       result = Util.eval_dice_string(state["roll_dice"])
