@@ -84,10 +84,10 @@ module Util
   def Util.eval_dice(dice)
     results = dice.map { |die, opp| [die, opp, eval_die(die)] }
 
-    rolls = results.map do |result|
+    rolls = results.map.with_index do |result, i|
       die, opp, roll = result
 
-      if result == results.first
+      if i == 0
         "(#{die} = #{roll})"
       else
         sign = opp == :add ? "+" : "-"
